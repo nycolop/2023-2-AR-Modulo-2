@@ -1,4 +1,5 @@
 from pygame.sprite import Sprite
+from game.components.bullets.bullet import Bullet
 from game.utils.constants import SPACESHIP, SCREEN_WIDTH, SHIP_SIZE, SHIP_WIDTH, SCREEN_HEIGHT
 import pygame
 
@@ -16,8 +17,11 @@ class Spaceshift(Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = (SCREEN_WIDTH // 2) - SHIP_WIDTH
         self.rect.y = self.SPACESHIFT_INITIAL_Y
+        self.type = 'player'
+        self.bullets_capacity = 3
+        self.bullet_interval = 100
 
-    def update(self, user_input):
+    def update(self, user_input, game):
         if user_input[pygame.K_LEFT]:
             self.move_left()
         elif user_input[pygame.K_RIGHT]:
@@ -27,6 +31,9 @@ class Spaceshift(Sprite):
         elif user_input[pygame.K_DOWN]:
             self.move_down()
         # Possible ToDo: add diagonal movement
+        
+        if user_input[pygame.K_SPACE]:
+            self.shoot(game.bullet_manager)
 
     def draw(self, screen):
         screen.blit(self.image, (self.rect.x, self.rect.y))
@@ -52,3 +59,8 @@ class Spaceshift(Sprite):
         if self.rect.y == self.SHIP_LIMITS["BOTTOM_LIMIT"]:
             return
         self.rect.y += 10
+
+    def shoot(self, bullet_manager):
+        if len(bullet_manager.bullets) < self.bullets_capacity:
+            bullet = Bullet(self)
+            bullet_manager.add_bullet(bullet)

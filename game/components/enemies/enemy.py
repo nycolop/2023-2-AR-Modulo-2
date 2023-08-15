@@ -1,6 +1,7 @@
 import random
 import pygame
 from pygame.sprite import Sprite
+from game.components.bullets.bullet import Bullet
 
 from game.utils.constants import SCREEN_HEIGHT, SCREEN_WIDTH, SHIP_SIZE, SHIP_WIDTH, ENEMIES
 
@@ -10,8 +11,6 @@ class Enemy(Sprite):
     SPEED_Y = [1, 2, 3, 4, 5]
     SPEED_X = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     MOV_X = { 0: 'left', 1: 'right' }
-    # RANDOM_ENEMY = ENEMIES[random.randint(0, len(ENEMIES) - 1)]
-    # Duda, si lo ponemos como constante, el enemigo random, no funciona
 
     def __init__(self):
         self.image = ENEMIES[random.randint(0, len(ENEMIES) - 1)]
@@ -24,9 +23,12 @@ class Enemy(Sprite):
         self.movement_x = self.MOV_X[random.randint(0, 1)]
         self.move_x_for = random.randint(30, 100)
         self.index = 0
+        self.shooting_time = random.randint(30, 50)
+        self.type = 'enemy'
 
-    def update(self, ships):
+    def update(self, ships, game):
         self.rect.y += self.speed_y
+        self.shoot(game.bullet_manager)
 
         if self.movement_x == 'left':
             self.rect.x -= self.speed_x
@@ -52,3 +54,10 @@ class Enemy(Sprite):
             self.movement_x = 'right'
             self.move_x_for = random.randint(30, 100)
             self.index = 0
+
+    def shoot(self, bullet_manager):
+        current_time = pygame.time.get_ticks()
+        if self.shooting_time <= current_time:
+            bullet = Bullet(self)
+            bullet_manager.add_bullet(bullet)
+            self.shooting_time += random.randint(30, 50)
