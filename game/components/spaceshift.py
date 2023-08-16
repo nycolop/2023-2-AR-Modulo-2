@@ -19,10 +19,21 @@ class Spaceshift(Sprite):
         self.rect.y = self.SPACESHIFT_INITIAL_Y
         self.type = 'player'
         self.bullets_capacity = 3
-        self.bullet_interval = 100
 
     def update(self, user_input, game):
-        if user_input[pygame.K_LEFT]:
+        if user_input[pygame.K_LEFT] and user_input[pygame.K_UP]:
+            self.move_left()
+            self.move_up()
+        elif user_input[pygame.K_LEFT] and user_input[pygame.K_DOWN]:
+            self.move_left()
+            self.move_down()
+        elif user_input[pygame.K_RIGHT] and user_input[pygame.K_UP]:
+            self.move_right()
+            self.move_up()
+        elif user_input[pygame.K_RIGHT] and user_input[pygame.K_DOWN]:
+            self.move_right()
+            self.move_down()
+        elif user_input[pygame.K_LEFT]:
             self.move_left()
         elif user_input[pygame.K_RIGHT]:
             self.move_right()
@@ -34,6 +45,10 @@ class Spaceshift(Sprite):
         
         if user_input[pygame.K_SPACE]:
             self.shoot(game.bullet_manager)
+
+        for enemy in game.enemy_manager.enemies:
+            if (game.player.rect.colliderect(enemy.rect)) or (enemy.rect.colliderect(game.player.rect)):
+                game.playing = False
 
     def draw(self, screen):
         screen.blit(self.image, (self.rect.x, self.rect.y))

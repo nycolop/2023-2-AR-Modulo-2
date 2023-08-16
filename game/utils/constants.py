@@ -34,3 +34,5 @@ SHIP_HEIGHT = 60
 SHIP_SIZE = (SHIP_WIDTH, SHIP_HEIGHT)
 
 FONT_STYLE = 'freesansbold.ttf'
+
+GAME_OVER = pygame.image.load(os.path.join(IMG_DIR, "Other/GameOver.png"))
