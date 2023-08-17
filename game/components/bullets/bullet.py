@@ -1,20 +1,23 @@
 import pygame
 from pygame.sprite import Sprite
 
-from game.utils.constants import BULLET, BULLET_ENEMY, SCREEN_HEIGHT
+from game.utils.constants import SCREEN_HEIGHT, SUPER_BULLET_TYPE
 
 
 class Bullet(Sprite):
-    BULLET_SIZE = pygame.transform.scale(BULLET, (10, 20))
-    BULLET_ENEMY_SIZE = pygame.transform.scale(BULLET_ENEMY, (10, 20))
-    BULLETS = {
-        'player': BULLET_SIZE,
-        'enemy': BULLET_ENEMY_SIZE
-    }
     SPEED = 20
 
     def __init__(self, spaceshift):
-        self.image = self.BULLETS[spaceshift.type]
+        self.image = None
+        if spaceshift.type == 'player' and spaceshift.power_up_type == SUPER_BULLET_TYPE:
+            self.image = spaceshift.model['bullets']['special']
+            self.image = pygame.transform.scale(self.image, (40, 50))
+        elif spaceshift.type == 'player':
+            self.image = spaceshift.model['bullets']['normal']
+            self.image = pygame.transform.scale(self.image, (10, 20))
+        elif spaceshift.type == 'enemy':
+            self.image = spaceshift.model['bullet']['model']
+            self.image = pygame.transform.scale(self.image, (10, 20))
         self.rect = self.image.get_rect()
         self.rect.center = spaceshift.rect.center
         self.owner = spaceshift.type

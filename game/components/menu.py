@@ -12,7 +12,7 @@ class Menu:
         self.text = self.font.render(message, True, (255, 255, 255))
         self.text_rect = self.text.get_rect()
         self.text_rect.center = (self.HALF_SCREEN_WIDTH, self.HALF_SCREEN_HEIGHT)
-        self.game_speed = 2
+        self.game_speed = 0.5
         self.x_pos_bg = 0
         self.y_pos_bg = 0
 

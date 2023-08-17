@@ -1,6 +1,8 @@
 from game.components.bullets.bullet import Bullet
 import pygame
 
+from game.utils.constants import SHIELD_TYPE
+
 
 class BulletManager:
     def __init__(self):
@@ -12,9 +14,11 @@ class BulletManager:
             bullet.update(self.enemy_bullets)
 
             if bullet.rect.colliderect(game.player.rect) and bullet.owner == 'enemy':
+                if game.player.power_up_type != SHIELD_TYPE:
+                    self.enemy_bullets.remove(bullet)
+                    game.player.lives -= 1
+                    break
                 self.enemy_bullets.remove(bullet)
-                game.playing = False
-                break
 
         for bullet in self.bullets:
             bullet.update(self.bullets)
@@ -22,8 +26,8 @@ class BulletManager:
             for enemy in game.enemy_manager.enemies:
                 if bullet.rect.colliderect(enemy.rect) and bullet.owner == 'player':
                     self.bullets.remove(bullet)
-                    game.enemy_manager.enemies.remove(enemy)
-                    game.score += 100
+                    game.enemy_manager.enemy_destroyed(enemy)
+                    game.score += 100 * enemy.model['difficulty']
 
     def draw(self, screen):
         for bullet in self.enemy_bullets:
